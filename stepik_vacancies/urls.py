@@ -17,17 +17,23 @@ import debug_toolbar
 from django.contrib import admin
 from django.urls import path, include
 
-from vacancies import views
+from vacancies.views import main, mycompany
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.MainView.as_view(), name='main'),
-    path('vacancies/', views.VacanciesView.as_view(), name='vacancies'),
-    path('vacancies/cat/<str:category>/', views.VacanciesByCategory.as_view(), name='vacancies_by_category'),
-    path('companies/<int:company_id>/', views.CompanyView.as_view(), name='company'),
-    path('vacancies/<int:vacancy_id>/', views.VacancyView.as_view(), name='vacancy'),
+    path('', main.MainView.as_view(), name='main'),
+    path('vacancies/', main.VacanciesView.as_view(), name='vacancies'),
+    path('vacancies/cat/<str:category>/', main.VacanciesByCategory.as_view(), name='vacancies_by_category'),
+    path('companies/<int:company_id>/', main.CompanyView.as_view(), name='company'),
+    path('vacancies/<int:vacancy_id>/', main.VacancyView.as_view(), name='vacancy'),
+    path('vacancies/<int:vacancy_id>/send/', main.SendView.as_view(), name='send'),
+    path('mycompany/', mycompany.UserCompany.as_view(), name='my_company'),
+    path('mycompany/create/', mycompany.UserCompanyCreate.as_view(), name='my_company_create'),
+    path('mycompany/vacancies/', mycompany.UserCompanyVacancies.as_view(), name='my_company_vacancies'),
+    path('mycompany/vacancies/<int:vacancy_id>/', mycompany.UserCompanyVacancy.as_view(), name='my_company_vacancy'),
+    path('registration/', include('registration.urls')),
     path('__debug__/', include(debug_toolbar.urls)),
 ]
 
-handler404 = views.custom_handler404
-handler500 = views.custom_handler500
+handler404 = main.custom_handler404
+handler500 = main.custom_handler500

@@ -24,7 +24,7 @@ SECRET_KEY = 'kwq)j@$(mk5$s#e_0_my(-%_sy655!^3jiopass8xer%%fxdr5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'vacancies',
+    'registration',
     'debug_toolbar',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +127,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
