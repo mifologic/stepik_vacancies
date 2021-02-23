@@ -1,13 +1,11 @@
-from datetime import datetime
-
 from django.db.models import Count
 from django.http import HttpResponseNotFound, HttpResponseServerError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
-from vacancies.context import get_current_user, get_vacancy
-from vacancies.forms import ApplicationForm, EditMyCompanyForm, EditMyVacancyForm
-from vacancies.models import Specialty, Vacancy, Company, Application
+from vacancies.check_user_status import get_current_user
+from vacancies.forms import ApplicationForm
+from vacancies.models import Specialty, Vacancy, Company
 
 
 class MainView(View):
@@ -26,7 +24,7 @@ class VacanciesByCategory(View):
 
     def get(self, request, category):
         specialty = get_object_or_404(Specialty, code=category)
-        vacancies = Vacancy.objects.filter(specialty=specialty)
+        vacancies = Vacancy.objects.prefetch_related('specialty')
         context = {
             'vacancies': vacancies,
             'specialty': specialty,
@@ -37,7 +35,7 @@ class VacanciesByCategory(View):
 class VacanciesView(View):
 
     def get(self, request):
-        vacancies = Vacancy.objects.all()
+        vacancies = Vacancy.objects.prefetch_related('specialty')
         context = {
             'vacancies': vacancies,
         }
@@ -53,14 +51,14 @@ class SendView(View):
             request, self.template_name,
             context={
                 'vacancy': vacancy,
-            }
+            },
         )
 
 
 class VacancyView(View):
 
     def get(self, request, vacancy_id):
-        vacancy = get_vacancy(vacancy_id)
+        vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
         form = ApplicationForm
         context = {
             'vacancy': vacancy,
@@ -71,7 +69,9 @@ class VacancyView(View):
     def post(self, request, vacancy_id):
         form = ApplicationForm(request.POST)
         user = get_current_user(request)
-        vacancy = get_vacancy(vacancy_id)
+        if user is None:
+            return redirect('login')
+        vacancy = Vacancy.objects.filter(pk=vacancy_id).select_related('specialty')
         if form.is_valid():
             application = form.save(commit=False)
             application.user = user
@@ -85,12 +85,10 @@ class CompanyView(View):
 
     def get(self, request, company_id):
         company = get_object_or_404(Company, pk=company_id)
-        vacancy = get_object_or_404(Vacancy, company=company_id)
-        vacancies_count = Vacancy.objects.filter(company__id=company_id).count()
+        vacancies = Vacancy.objects.filter(company=company.id).select_related('specialty')
         context = {
             'company': company,
-            'vacancy': vacancy,
-            'vacancies_count': vacancies_count,
+            'vacancies': vacancies,
         }
         return render(request, 'vacancies/company.html', context=context)
 

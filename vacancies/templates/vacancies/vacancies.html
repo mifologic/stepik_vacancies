@@ -1,8 +1,9 @@
 {% extends "vacancies/base.html" %}
-{% block vacancies %}
+{% block content %}
 {% load ru_declination %}
 <main class="container mt-3">
     <section>
+        <h1 class="h1 text-center mx-auto mt-4 pt-5" style="font-size: 70px;"><strong>Все вакансии</strong></h1>
         <h1 class="h1 text-center mx-auto mt-4 pt-5" style="font-size: 70px;"><strong>{{ specialty.title }}</strong>
         </h1>
         <p class="text-center pt-1">{{ vacancies.count|ru_declination:"вакансия, вакансии, вакансий"  }} </p>
@@ -19,7 +20,7 @@
                                 <p class="text-muted pt-1">{{ vacancy.published_at }}</p>
                             </div>
                             <div class="col-12 col-md-4 col-lg-3 d-flex align-items-end">
-                                <img src="{{ vacancy.specialty.picture }}" width="130" height="80" alt="">
+                                <img src="/media/{{ vacancy.specialty.picture }}/" width="100" height="100" alt="">
                             </div>
                         </div>
                     </div>

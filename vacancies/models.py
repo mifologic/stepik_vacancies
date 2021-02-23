@@ -1,17 +1,19 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from stepik_vacancies.settings import MEDIA_COMPANY_IMAGE_DIR, MEDIA_SPECIALITY_IMAGE_DIR
+
 
 class Company(models.Model):
     name = models.CharField(max_length=150)
     location = models.CharField(max_length=150)
-    logo = models.URLField(default='https://place-hold.it/100x60', max_length=150)
+    logo = models.ImageField(upload_to=MEDIA_COMPANY_IMAGE_DIR)
     description = models.TextField(max_length=255)
     employee_count = models.IntegerField()
     owner = models.OneToOneField(
         User,
         related_name='companies',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
 
     def __str__(self):
@@ -21,7 +23,7 @@ class Company(models.Model):
 class Specialty(models.Model):
     code = models.CharField(max_length=50)
     title = models.CharField(max_length=150)
-    picture = models.URLField(default='https://place-hold.it/100x60', max_length=150)
+    picture = models.ImageField(upload_to=MEDIA_SPECIALITY_IMAGE_DIR)
 
     def __str__(self):
         return f'{self.title}'
@@ -32,21 +34,21 @@ class Vacancy(models.Model):
     specialty = models.ForeignKey(
         Specialty,
         related_name="vacancies",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     company = models.ForeignKey(
         Company,
         related_name="vacancies",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     skills = models.CharField(max_length=150)
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=1500)
     salary_min = models.IntegerField()
     salary_max = models.IntegerField()
-    published_at = models.DateField()
+    published_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.pk} {self.company}'
+        return f'{self.pk} {self.title} {self.specialty} {self.company}'
 
 
 class Application(models.Model):
@@ -56,14 +58,12 @@ class Application(models.Model):
     vacancy = models.ForeignKey(
         Vacancy,
         related_name="applications",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     user = models.ForeignKey(
         User,
         related_name="applications",
-        default=None,
-        null=True,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
 
     def __str__(self):

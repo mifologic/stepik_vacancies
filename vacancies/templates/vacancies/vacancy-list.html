@@ -1,5 +1,5 @@
-{% extends "vacancies/my-company-base.html" %}
-{% block vacancy-list %}
+{% extends "vacancies/base.html" %}
+{% block content %}
       {% load ru_declination %}
   <main class="container mt-3 pb-5">
     <div class="row mt-5">
@@ -24,8 +24,10 @@
                     <div class="col-6 col-lg-8">
                       <a href="{% url 'my_company_vacancy' vacancy.id %}" class="mb-1">{{ vacancy.title }}</a>
                       <p class="mb-1">
-                        <span class="mr-4">{{ vacancy.salary_max }}</span><a href="#" class="text-info">
-                        {{ vacancy.applications.count|ru_declination:"отклик, отклика, откликов" }} </a>
+                        <span class="mr-4">{{ vacancy.salary_max }}</span>
+                        <a href="{% url 'my_company_vacancy' vacancy.id %}" class="text-info">
+                        {{ vacancy.applications_count|ru_declination:"отклик, отклика, откликов" }}
+                        </a>
                       </p>
                     </div>
                     <div class="col-6 col-lg-4 text-right">

@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('vacancies', '0002_auto_20210214_1105'),
     ]
@@ -26,13 +25,27 @@ class Migration(migrations.Migration):
                 ('written_username', models.CharField(max_length=48)),
                 ('written_phone', models.CharField(max_length=12)),
                 ('written_cover_letter', models.CharField(max_length=1000)),
-                ('user', models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='applications', to='vacancies.user')),
-                ('vacancy', models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='applications', to='vacancies.vacancy')),
+                ('user', models.ForeignKey(
+                    default=None,
+                    null=True,
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='applications',
+                    to='vacancies.user')),
+                ('vacancy', models.ForeignKey(
+                    default=None,
+                    null=True,
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='applications',
+                    to='vacancies.vacancy')),
             ],
         ),
         migrations.AddField(
             model_name='company',
             name='owner',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='companies', to='vacancies.user'),
+            field=models.ForeignKey(
+                default=None, null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='companies',
+                to='vacancies.user'),
         ),
     ]
